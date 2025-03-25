@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+		<!-- <style>
+			html {
+				font-size: 14px;
+				padding: 0;
+				margin: 0;
+			}
+			#chat .form-control {
+				border-color: transparent;
+				background: #fefdfd;
+			}
+
+			#chat .form-control:focus {
+				border-color: transparent;
+				box-shadow: inset 0px 0px 0px 1px transparent;
+			}
+
+			.badge-dot {
+				border-radius: 50%;
+				height: 10px;
+				width: 10px;
+				margin-left: 2.9rem;
+				margin-top: -0.75rem;
+			}
+			.chat-messages-background {
+				/* background: linear-gradient(135deg, #9e9fa0, #f6f7f8);
+				backdrop-filter: blur(10px);
+				background-size: 100% 100%;
+				animation: bgMessages 15s ease infinite; */
+				background-image: url(./public/images/fully-scalable-chat-app-pt1-2.jpg);
+				background-size: 50% 50%;
+			}
+			.chat-messages-show-scrollbar::-webkit-scrollbar {
+				width: 5px;
+				height: 5px;
+			}
+			.chat-messages-hide-scrollbar::-webkit-scrollbar {
+				display: none;
+			}
+			::-webkit-scrollbar-thumb {
+				background-color: rgb(172, 170, 170);
+				border-radius: 10px;
+			}
+			::-webkit-scrollbar-track {
+				background-color: #e3d9d9;
+			}
+			.sent-message {
+				border-radius: 6px 0 6px 6px;
+				position: relative;
+			}
+			.sent-message::after {
+				content: "";
+				position: absolute;
+				top: 0;
+				right: -17px;
+				width: 20px;
+				height: 20px;
+				background-color: #3471ca;
+				clip-path: polygon(0 0, 100% 0, 0 100%);
+			}
+			.received-message {
+				border-radius: 0 6px 6px 6px;
+				position: relative;
+			}
+			.received-message::after {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: -18px;
+				width: 20px;
+				height: 20px;
+				background-color: #fbfbfb;
+				clip-path: polygon(0 0, 100% 0, 100% 100%);
+			}
+
+			#messageInputField::-webkit-scrollbar {
+				display: none;
+			}
+			.online-users-hover:hover {
+				background-color: #f1f2f3;
+			}
+			.audio-player {
+				display: flex;
+				align-items: center;
+				background: #e1ffc7;
+				border-radius: 20px;
+				padding: 10px;
+				width: 250px;
+				box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.play-btn {
+				background: none;
+				border: none;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 5px;
+				border-radius: 50%;
+				transition: 0.3s;
+			}
+
+			.progress-container {
+				flex: 1;
+				height: 4px;
+				background: #d1d1d1; /* Light gray track */
+				margin: 0 10px;
+				border-radius: 5px;
+				position: relative;
+				overflow: hidden;
+				cursor: pointer;
+			}
+
+			.progress-bar {
+				height: 100%;
+				background: #34af23; /* WhatsApp-like green progress */
+				transition: width 0.1s linear;
+			}
+
+			.time {
+				font-size: 12px;
+				color: #333;
+			}
+			@keyframes pulse {
+				0% {
+					transform: scale(1);
+				}
+				50% {
+					transform: scale(1.2);
+				}
+				100% {
+					transform: scale(1);
+				}
+			}
+		</style> -->
+
+		<title>Nano</title>
+	</head>
+	<body>
+		<div id="root"></div>
+		<!-- MDB -->
+		<!-- <script>
+			document
+				.getElementById("messageInputField")
+				.addEventListener("keydown", function (e) {
+					if (e.key === "Enter" && !e.shiftKey) {
+						e.preventDefault();
+					}
+				});
+		</script> -->
+		<script type="module" src="/src/main.jsx"></script>
+	</body>
+</html>
