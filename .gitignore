@@ -29,11 +29,6 @@ logs/
 *.class
 *.exe
 
-# Ignore Python virtual environments and cache files
-__pycache__/
-*.pyc
-*.pyo
-venv/
 
 # Ignore Java dependencies
 *.jar
