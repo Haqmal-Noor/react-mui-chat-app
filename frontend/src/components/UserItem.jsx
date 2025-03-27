@@ -19,10 +19,10 @@ function UserItem({ user }) {
 				<Box sx={{ position: "relative", mr: 2 }}>
 					<Badge
 						variant="dot"
-						color="success"
+						color="primary"
 						overlap="circular"
 						anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
-						<Avatar src={"https://mui.com/static/images/avatar/1.jpg"} />
+						<Avatar src={user.profilePic} />
 					</Badge>
 				</Box>
 				<Box>
@@ -38,7 +38,7 @@ function UserItem({ user }) {
 				<Typography variant="caption" color="text.secondary" display="block">
 					Just now
 				</Typography>
-				<Badge badgeContent={3} color="error" />
+				<Badge badgeContent={3} color="primary" />
 			</Box>
 		</Box>
 	);

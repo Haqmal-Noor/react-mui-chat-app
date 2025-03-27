@@ -7,9 +7,6 @@ yarn-error.log
 .env
 .env.local
 
-# Ignore OS system files
-.DS_Store
-Thumbs.db
 
 # Ignore build and log files
 dist/
@@ -23,20 +20,5 @@ logs/
 *.swp
 *.swo
 
-# Ignore compiled files
-*.out
-*.o
-*.class
-*.exe
 
 
-# Ignore Java dependencies
-*.jar
-*.war
-*.ear
-
-# Ignore macOS folder
-._*
-
-# Ignore Docker files
-docker-compose.override.yml

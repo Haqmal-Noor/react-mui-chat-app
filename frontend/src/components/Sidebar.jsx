@@ -1,12 +1,15 @@
+import { useAuthStore } from "../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
+
 import { Box, IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChatIcon from "@mui/icons-material/Chat";
-import CallIcon from "@mui/icons-material/Call";
-import StarIcon from "@mui/icons-material/Star";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import SettingsIcon from "@mui/icons-material/Settings";
+
+import { Chat, Call, Home, Settings, AccountCircle } from "@mui/icons-material";
+
+import LogoutButton from "./Logout";
 
 function Sidebar() {
+	const { logout } = useAuthStore();
+	const navigate = useNavigate();
 	return (
 		<Box
 			sx={{
@@ -20,25 +23,25 @@ function Sidebar() {
 				py: 2,
 			}}>
 			<Box color={"white"} display="flex" flexDirection="column" gap={2}>
-				<IconButton color="inherit">
-					<MenuIcon />
+				<IconButton onClick={() => navigate("/")} color="inherit">
+					<Home />
 				</IconButton>
 				<IconButton color="inherit">
-					<ChatIcon />
+					<Chat />
 				</IconButton>
 				<IconButton color="inherit">
-					<CallIcon />
+					<Call />
 				</IconButton>
 			</Box>
 			<Box display="flex" color={"white"} flexDirection="column" gap={2}>
-				<IconButton color="inherit">
-					<StarIcon />
+				<IconButton onClick={() => navigate("/profile")} color="inherit">
+					<AccountCircle />
 				</IconButton>
-				<IconButton color="inherit">
-					<ArchiveIcon />
-				</IconButton>
-				<IconButton color="inherit">
-					<SettingsIcon />
+
+				<LogoutButton onLogout={logout} />
+
+				<IconButton onClick={() => navigate("/settings")} color="inherit">
+					<Settings />
 				</IconButton>
 			</Box>
 		</Box>

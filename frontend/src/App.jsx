@@ -1,30 +1,34 @@
-import "./../public/css/mdb.min.css";
-import "./../public/js/mdb.umd.min.js";
-
+import React, { useEffect, useState } from "react";
 import {
 	BrowserRouter as Router,
 	Routes,
 	Route,
 	Navigate,
 } from "react-router-dom";
-import { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme/theme.js";
+import { themes } from "./theme/theme.js";
 import { useAuthStore } from "./store/useAuthStore.js";
 import { ToastContainer } from "react-toastify";
+import { CssBaseline } from "@mui/material";
+import { GlobalStyles } from "@mui/material";
 
 import Loader from "./components/Loader.jsx";
-import Navbar from "./components/Navbar.jsx";
-
 import ChatPage from "./pages/ChatPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
-import SettingsPage from "./pages/SettingsPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
 
 function App() {
 	const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
-	console.log(authUser);
+
+	// Get the saved theme from localStorage or set to default darkTheme1
+	const savedTheme = localStorage.getItem("theme") || "darkTheme1";
+	const [currentTheme, setCurrentTheme] = useState(savedTheme);
+
+	useEffect(() => {
+		localStorage.setItem("theme", currentTheme); // Save the theme to localStorage
+	}, [currentTheme]);
 
 	useEffect(() => {
 		checkAuth();
@@ -33,9 +37,23 @@ function App() {
 	if (isCheckingAuth && !authUser) {
 		return <Loader />;
 	}
+
 	return (
-		<ThemeProvider theme={theme}>
-			<Navbar />
+		<ThemeProvider theme={themes[currentTheme] || themes["darkTheme1"]}>
+			<CssBaseline />
+			<GlobalStyles
+				styles={{
+					body: {
+						backgroundColor:
+							themes[currentTheme]?.palette.background.default ||
+							themes["darkTheme1"].palette.background.default,
+						color:
+							themes[currentTheme]?.palette.text.primary ||
+							themes["darkTheme1"].palette.text.primary,
+						transition: "background-color 0.3s ease",
+					},
+				}}
+			/>
 			<Router>
 				<Routes>
 					<Route
@@ -54,11 +72,20 @@ function App() {
 						path="/profile"
 						element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
 					/>
-					<Route path="/settings" element={<SettingsPage />} />
+					<Route
+						path="/settings"
+						element={
+							<SettingsPage
+								currentTheme={currentTheme}
+								setCurrentTheme={setCurrentTheme}
+							/>
+						}
+					/>
 				</Routes>
 			</Router>
 			<ToastContainer />
 		</ThemeProvider>
 	);
 }
+
 export default App;

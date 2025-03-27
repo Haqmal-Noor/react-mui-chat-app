@@ -63,7 +63,6 @@ const RegisterPage = () => {
 	return (
 		<Box
 			sx={{
-				backgroundColor: "#eee",
 				height: "100vh",
 				display: "flex",
 				justifyContent: "center",

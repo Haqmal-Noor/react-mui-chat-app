@@ -1,25 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-	Box,
-	Card,
-	Avatar,
-	IconButton,
-	Typography,
-	Button,
-	Stack,
-} from "@mui/material";
-import { VideoCall, Call, Search } from "@mui/icons-material";
+import { Box } from "@mui/material";
 import ChatSide from "../components/ChatSide";
-import SingleChat from "../components/SingleChat";
+import NoUserSelectedComponent from "../components/NoUserSelectedComponent";
+import SingleChat from "../components/ChatContainer";
 import Sidebar from "../components/Sidebar";
-import socket from "../services/socket";
-import TopNav from "../components/TopNav";
-import { useAuthStore } from "../store/useAuthStore";
+
+import { useChatStore } from "../store/useChatStore";
 
 const ChatPage = () => {
-	const { authUser } = useAuthStore();
-	console.log(authUser);
+	const { selectedUser } = useChatStore();
 	// const [user, setUser] = useState("");
 	// const [messages, setMessages] = useState([]);
 	// const [receiver, setReceiver] = useState(null);
@@ -78,7 +68,13 @@ const ChatPage = () => {
 	// }, [receiver]);
 
 	return (
-		<div>Chat Page</div>
+		<div style={{ display: "flex" }}>
+			<Sidebar />
+			<Box display="flex" flex={1}>
+				<ChatSide />
+				{selectedUser ? <SingleChat /> : <NoUserSelectedComponent />}
+			</Box>
+		</div>
 		// <Box display="flex" height="100vh">
 		// 	<Sidebar />
 		// 	<Box flex={1} display="flex" flexDirection="column">
@@ -88,34 +84,12 @@ const ChatPage = () => {
 		// 				display: "flex",
 		// 				flexDirection: "column",
 		// 			}}>
-		// 			<Box display="flex" flex={1}>
-		// 				<ChatSide />
-		// 				{/* <Box
-		// 						display="flex"
-		// 						justifyContent="center"
-		// 						alignItems="center"
-		// 						width="100%"
-		// 						height="100vh"
-		// 						borderRadius={0}>
-		// 						<Box textAlign="center">
-		// 							<Typography variant="h5" fontWeight="bold">
-		// 								HaqSapp for you!
-		// 							</Typography>
-		// 							<Typography>
-		// 								Send and receive messages without keeping your phone online.
-		// 							</Typography>
-		// 							<Typography>
-		// 								Use <strong>HaqSapp</strong> on up to 4 linked devices and
-		// 								one phone at the same time.
-		// 							</Typography>
-		// 						</Box>
-		// 					</Box> */}
+		//
 
 		// 				<Box flex={1} display="flex" flexDirection="column">
 		// 					<TopNav />
 		// 					<SingleChat />
 		// 				</Box>
-		// 			</Box>
 		// 		</Card>
 		// 	</Box>
 		// </Box>

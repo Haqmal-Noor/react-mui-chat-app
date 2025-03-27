@@ -1,19 +1,16 @@
 import express from "express";
+import protectedRoute from "../middlewares/auth.middleware.js";
 import {
-	sendMessage,
 	getMessages,
-	saveVoiceMessage,
-	markDelivered,
-	markSeen,
+	getUsersForSidebar,
+	sendMessage,
 } from "../controllers/message.controller.js";
-import authenticate from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/send", authenticate, sendMessage);
-router.post("/send-voice-message", authenticate, saveVoiceMessage);
-router.get("/:receiver", authenticate, getMessages);
-router.post("/mark-delivered", authenticate, markDelivered);
-router.post("/mark-seen", authenticate, markSeen);
+router.get("/users", protectedRoute, getUsersForSidebar);
+router.get("/:id", protectedRoute, getMessages);
+
+router.post("/send/:id", protectedRoute, sendMessage);
 
 export default router;
