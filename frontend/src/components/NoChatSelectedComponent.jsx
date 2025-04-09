@@ -1,7 +1,7 @@
 import { Typography, Box } from "@mui/material";
 import { Chat } from "@mui/icons-material";
 
-export default function NoUserSelectedComponent() {
+export default function NoChatSelectedComponent() {
 	return (
 		<Box
 			display="flex"

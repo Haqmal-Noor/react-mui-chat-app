@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
+
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 
-import TopNav from "./TopNav";
-import ChatSkeleton from "./ChatSkeleton";
-import TransferMessageInput from "./TransferMessageInput";
-import AudioPlayer from "./AudioPlayer";
+import TopNav from "../components/TopNav";
+import ChatSkeleton from "../components/ChatSkeleton";
+import TransferMessageInput from "../components/TransferMessageInput";
+import AudioPlayer from "../components/AudioPlayer";
 
 import {
 	Box,
@@ -19,50 +20,60 @@ import {
 import { Check } from "@mui/icons-material";
 
 import { format } from "date-fns";
+import { useParams } from "react-router-dom";
 
-function ChatComponent() {
+function ChatDetailsPage() {
+	const { id } = useParams();
 	const messagesRef = useRef(null);
+
 	const { authUser } = useAuthStore();
 	const {
 		messages,
 		getMessages,
 		isMessagesLoading,
 		selectedChat,
+		getChatById,
 		subscribeToMessages,
 		unsubscribeFromMessages,
 	} = useChatStore();
 
-	// State for modal
 	const [openModal, setOpenModal] = useState(false);
 	const [selectedImage, setSelectedImage] = useState("");
 
+	// Fetch the chat by ID when the component mounts or the ID changes
+	useEffect(() => {
+		if (id) {
+			getChatById(id);
+		}
+	}, [id, getChatById]);
+
+	// Fetch messages and set up subscription when selectedChat updates
+	useEffect(() => {
+		if (selectedChat?._id) {
+			getMessages(selectedChat._id);
+			subscribeToMessages();
+			return () => unsubscribeFromMessages();
+		}
+	}, [selectedChat, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+
+	// Scroll to bottom when messages change
 	useEffect(() => {
 		if (messagesRef.current) {
 			messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
 		}
 	}, [messages]);
 
-	useEffect(() => {
-		if (selectedChat?._id) {
-			getMessages(selectedChat._id);
-			subscribeToMessages();
-
-			return () => unsubscribeFromMessages();
-		}
-	}, [selectedChat, getMessages, subscribeToMessages, unsubscribeFromMessages]);
-
-	// Open Modal
+	// Modal controls
 	const handleOpenModal = (image) => {
 		setSelectedImage(image);
 		setOpenModal(true);
 	};
 
-	// Close Modal
 	const handleCloseModal = () => {
 		setOpenModal(false);
 	};
 
-	if (isMessagesLoading) return <ChatSkeleton />;
+	if (isMessagesLoading || !selectedChat) return <ChatSkeleton />;
 
 	return (
 		<div
@@ -95,7 +106,9 @@ function ChatComponent() {
 								src={
 									isSentByCurrentUser
 										? authUser.profilePic
-										: selectedChat.participants[1].profilePic
+										: selectedChat.participants.find(
+												(p) => p._id === message.senderId
+											)?.profilePic
 								}
 							/>
 							<Card
@@ -117,10 +130,10 @@ function ChatComponent() {
 											width: 200,
 											height: 200,
 											objectFit: "cover",
-											cursor: "pointer", // Make it clickable
+											cursor: "pointer",
 										}}
 										alt="Message attachment"
-										onClick={() => handleOpenModal(message.image)} // Open modal on click
+										onClick={() => handleOpenModal(message.image)}
 									/>
 								)}
 								{message.text && (
@@ -155,7 +168,6 @@ function ChatComponent() {
 			</Box>
 			<TransferMessageInput />
 
-			{/* Image Modal */}
 			<Modal open={openModal} onClose={handleCloseModal}>
 				<Box
 					sx={{
@@ -180,4 +192,4 @@ function ChatComponent() {
 	);
 }
 
-export default ChatComponent;
+export default ChatDetailsPage;

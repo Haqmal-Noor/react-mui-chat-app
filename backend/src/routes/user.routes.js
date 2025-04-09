@@ -14,6 +14,8 @@ import authenticate from "../middlewares/auth.middleware.js";
 // User profile route
 router.get("/profile", authenticate, getProfile);
 
+// router.get("/users", protectedRoute, getUsersForSidebar);
+
 // Friend management routes
 router.post("/friends/add", authenticate, addFriend);
 router.delete("/friends/remove/:friendId", authenticate, removeFriend);

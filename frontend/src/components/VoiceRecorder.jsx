@@ -1,48 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
 import { IconButton, CircularProgress } from "@mui/material";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 
-const VoiceRecorder = ({ socket, sender, receiver, setMessages }) => {
+import { useChatStore } from "../store/useChatStore";
+
+const VoiceRecorder = () => {
+	const { sendMessage } = useChatStore();
+
 	const [isRecording, setIsRecording] = useState(false);
 	const mediaRecorderRef = useRef(null);
 	const audioChunks = useRef([]);
 	const streamRef = useRef(null);
-
-	const sendVoiceMessage = async (base64Audio) => {
-		try {
-			const response = await axios.post(
-				"http://localhost:5000/api/chat/send-voice-message",
-				{
-					sender,
-					receiver,
-					audio: base64Audio,
-					format: "audio/webm",
-				},
-				{
-					headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-				}
-			);
-			const data = response.data;
-			console.log("Voice message saved:", data);
-			
-
-			setMessages((prev) => [
-				...prev,
-				{
-					sender,
-					receiver,
-					content: data.audioUrl || base64Audio,
-					type: "sent",
-					format: "audio/webm",
-					timestamp: new Date().toLocaleTimeString(),
-				},
-			]);
-		} catch (error) {
-			console.error("Error saving voice message:", error);
-		}
-	};
 
 	const toggleRecording = async () => {
 		if (!isRecording) {
@@ -68,9 +37,8 @@ const VoiceRecorder = ({ socket, sender, receiver, setMessages }) => {
 					const reader = new FileReader();
 
 					reader.onloadend = async () => {
-						const base64Audio = reader.result;
-						socket.emit("send-voice", sender, receiver, base64Audio);
-						await sendVoiceMessage(base64Audio);
+						const base64Audio = reader.result.split(",")[1]; // Extract base64 string only
+						await sendMessage({ audio: base64Audio }); // Send base64 audio
 					};
 
 					reader.readAsDataURL(audioBlob);

@@ -12,8 +12,13 @@ import { ToastContainer } from "react-toastify";
 import { CssBaseline } from "@mui/material";
 import { GlobalStyles } from "@mui/material";
 
+// layouts
+import MainLayout from "./layouts/MainLayout.jsx";
+import ChatLayout from "./layouts/ChatLayout.jsx";
+// components
 import Loader from "./components/Loader.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
+import ChatDetailsPage from "./pages/ChatDetailsPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
@@ -56,30 +61,34 @@ function App() {
 			/>
 			<Router>
 				<Routes>
+					{/* Chat routes with Sidebar + ChatSide */}
+					<Route element={authUser ? <ChatLayout /> : <Navigate to="/login" />}>
+						<Route path="/chats" element={<ChatPage />} />
+						<Route path="/chats/:id" element={<ChatDetailsPage />} />
+					</Route>
+
+					{/* General pages with Sidebar only */}
+					<Route element={authUser ? <MainLayout /> : <Navigate to="/login" />}>
+						<Route
+							path="/settings"
+							element={
+								<SettingsPage
+									currentTheme={currentTheme}
+									setCurrentTheme={setCurrentTheme}
+								/>
+							}
+						/>
+						<Route path="/profile" element={<ProfilePage />} />
+					</Route>
+
+					{/* No-sidebar pages */}
 					<Route
-						path="/"
-						element={authUser ? <ChatPage /> : <Navigate to="/login" />}
+						path="/login"
+						element={!authUser ? <LoginPage /> : <Navigate to="/chats" />}
 					/>
 					<Route
 						path="/register"
-						element={!authUser ? <RegisterPage /> : <Navigate to="/" />}
-					/>
-					<Route
-						path="/login"
-						element={!authUser ? <LoginPage /> : <Navigate to="/" />}
-					/>
-					<Route
-						path="/profile"
-						element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
-					/>
-					<Route
-						path="/settings"
-						element={
-							<SettingsPage
-								currentTheme={currentTheme}
-								setCurrentTheme={setCurrentTheme}
-							/>
-						}
+						element={!authUser ? <RegisterPage /> : <Navigate to="/chats" />}
 					/>
 				</Routes>
 			</Router>

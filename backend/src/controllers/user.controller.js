@@ -116,31 +116,41 @@ export const getFriendByUsername = async (req, res) => {
 		res.status(500).json({ message: "Internal Server Error" });
 	}
 };
+// export const getUsersForSidebar = async (req, res) => {
+// 	try {
+// 		const loggedInUserId = req.user._id;
+// 		const filteredUsers = await User.find({
+// 			_id: { $ne: loggedInUserId },
+// 		}).select("-password");
+
+// 		res.status(200).json(filteredUsers);
+// 	} catch (error) {
+// 		console.error("Error in getUsersForSidebar: ", error.message);
+// 		res.status(500).json({ error: "Internal server error" });
+// 	}
+// };
 
 // Search users
 export const searchUsers = async (req, res) => {
-	const query = req.query.q?.trim().toLowerCase() || "";
-
-	if (!query)
-		return res.status(400).json({ message: "Query parameter is required" });
-
 	try {
-		// Fetch the logged-in user's details
-		const currentUser = await User.findById(req.user.id).select("friends");
-
-		// If the user does not exist (though it should exist based on middleware)
-		if (!currentUser) {
-			return res.status(404).json({ message: "User not found" });
+		const loggedInUserId = req.user._id;
+		// 		const filteredUsers = await User.find({
+		// 			_id: { $ne: loggedInUserId },
+		// 		}).select("-password");
+		let users;
+		// todo: should return existing contacts instead
+		if (req.query.q.length < 1) {
+			users = await User.find({ _id: { $ne: loggedInUserId } })
+				.select("username email profilePic")
+				.limit(10);
+		} else {
+			const query = req.query.q?.trim().toLowerCase() || "";
+			// Exclude friends in the friends array
+			users = await User.find({
+				username: { $regex: query, $options: "i" },
+				_id: { $ne: loggedInUserId },
+			}).select("username email profilePic");
 		}
-
-		// Exclude friends in the friends array
-		const users = await User.find({
-			_id: {
-				$ne: req.user.id, // Exclude the logged-in user
-				$nin: currentUser.friends, // Exclude users in the friends array
-			},
-			username: { $regex: query, $options: "i" },
-		}).select("username email");
 
 		res.status(200).json(users);
 	} catch (error) {

@@ -1,12 +1,37 @@
-import React, { useState } from "react";
-import { Menu, MenuItem, TextField, IconButton } from "@mui/material";
-import { Chat } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../lib/axios";
 
-const SearchableDropdown = ({ items }) => {
+import { useChatStore } from "../store/useChatStore";
+import { useAuthStore } from "../store/useAuthStore";
+
+import {
+	Popover,
+	TextField,
+	List,
+	ListItem,
+	ListItemText,
+	ListItemAvatar,
+	Avatar,
+	IconButton,
+} from "@mui/material";
+import Search from "@mui/icons-material/Search";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+
+import { toast } from "react-toastify";
+
+const DropdownMenuForContactsSearch = () => {
+	const navigate = useNavigate();
+
+	const { createNewChat } = useChatStore();
+	const { authUser } = useAuthStore();
+
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [search, setSearch] = useState("");
 
-	const handleClick = (event) => {
+	const [contacts, setContacts] = useState([]);
+
+	const handleOpen = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
 
@@ -14,32 +39,74 @@ const SearchableDropdown = ({ items }) => {
 		setAnchorEl(null);
 	};
 
-	const filteredItems = items.filter((item) =>
-		item.toLowerCase().includes(search.toLowerCase())
-	);
+	const handleCreateChat = (item) => {
+		createNewChat([authUser._id, item._id]);
+		navigate(`/chats/${item._id}`);
+	};
+
+	useEffect(() => {
+		const getContacts = async () => {
+			try {
+				const response = await axiosInstance.get(`/users/search?q=${search}`);
+				setContacts(response.data);
+			} catch (error) {
+				toast.error(error.response.data.message);
+			}
+		};
+		getContacts();
+	}, [search]);
 
 	return (
-		<div>
-			<IconButton onClick={handleClick} color="primary">
-				<Chat />
+		<>
+			<IconButton color="primary" onClick={handleOpen}>
+				<OpenInNewIcon />
 			</IconButton>
-			<Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-				<TextField
-					variant="outlined"
-					placeholder="Search..."
-					size="small"
-					fullWidth
-					onChange={(e) => setSearch(e.target.value)}
-					style={{ margin: "8px" }}
-				/>
-				{filteredItems.map((item, index) => (
-					<MenuItem key={index} onClick={handleClose}>
-						{item}
-					</MenuItem>
-				))}
-			</Menu>
-		</div>
+
+			<Popover
+				open={Boolean(anchorEl)}
+				anchorEl={anchorEl}
+				onClose={handleClose}
+				anchorOrigin={{ vertical: "bottom", horizontal: "left" }}>
+				<div style={{ width: 320, padding: "10px" }}>
+					<h2 style={{ margin: 0, marginBottom: "10px" }}>New chat</h2>
+					<TextField
+						fullWidth
+						size="small"
+						variant="outlined"
+						placeholder="Search..."
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						InputProps={{
+							startAdornment: <Search style={{ marginRight: 8 }} />,
+						}}
+					/>
+					<List>
+						{contacts.length !== 0 ? (
+							contacts.map((item, index) => (
+								<ListItem
+									button
+									key={index}
+									onClick={() => handleCreateChat(item)}>
+									{/* Avatar for Profile Picture */}
+									<ListItemAvatar>
+										<Avatar src={item.profilePic} alt={item.username}>
+											{item.username.charAt(0)}{" "}
+											{/* Fallback to first letter if no image */}
+										</Avatar>
+									</ListItemAvatar>
+
+									{/* Contact Username */}
+									<ListItemText primary={item.username} />
+								</ListItem>
+							))
+						) : (
+							<h4 style={{ textAlign: "center" }}>No result</h4>
+						)}
+					</List>
+				</div>
+			</Popover>
+		</>
 	);
 };
 
-export default SearchableDropdown;
+export default DropdownMenuForContactsSearch;

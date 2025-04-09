@@ -1,20 +1,17 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import http from "http";
-import { Server } from "socket.io";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
-import chatRoutes from "./routes/message.routes.js";
+import messageRoutes from "./routes/message.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
 import userRoutes from "./routes/user.routes.js";
-import Message from "./models/message.model.js";
-import User from "./models/user.model.js";
+
+import { app, server } from "./lib/socket.js";
 
 dotenv.config();
-
-const app = express();
 
 app.use(
 	cors({
@@ -22,11 +19,6 @@ app.use(
 		credentials: true,
 	})
 );
-
-const server = http.createServer(app);
-const io = new Server(server, {
-	cors: { origin: "*" },
-});
 
 // Database connection
 connectDB();
@@ -38,8 +30,9 @@ app.use(express.urlencoded({ limit: "50mb", extended: true })); // Increase for 
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/chat", chatRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/chats", chatRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/users", userRoutes);
 
 // const users = {}; // Map of users { username: socketId }
 // const onlineUsers = new Set(); // Set to track unique online users

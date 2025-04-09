@@ -14,6 +14,7 @@ const createModernTheme = (
 			primary: { main: primaryMain },
 			background: { default: backgroundDefault, paper: backgroundPaper },
 			text: { primary: textPrimary },
+			divider: { primary: primaryMain },
 		},
 		typography: {
 			fontFamily: "'Nunito', sans-serif",

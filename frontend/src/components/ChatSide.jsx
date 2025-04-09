@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@mui/material";
+import { Card, CardContent, useMediaQuery } from "@mui/material";
 
-import UserItem from "./UserItem";
+import ChatItem from "./ChatItem";
 import SkeletonUsers from "./SkeletonUsers";
-import UsersList from "./UsersList";
+import ChatsList from "./ChatsList";
 import SidebarHeader from "./SidebarHeader";
 
 import { useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 
 function ChatSide() {
-	const { getUsers, users, isUsersLoading } = useChatStore();
-	const onlineUsers = [];
+	const { getChats, chats, isChatsLoading } = useChatStore();
 
 	useEffect(() => {
-		getUsers();
-	}, [getUsers]);
+		getChats();
+	}, [getChats]);
 
 	const [width, setWidth] = useState(420); // Initial width of the card
 	const resizableRef = useRef(null); // Ref to the resizable area
@@ -42,11 +41,13 @@ function ChatSide() {
 		document.addEventListener("mouseup", handleMouseUp);
 	};
 
+	const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm")); // Set your breakpoint
+
 	return (
 		<Card
 			ref={resizableRef}
 			sx={{
-				width: width,
+				width: isSmallScreen ? 500 : width,
 				p: 2,
 				borderRadius: 0,
 				boxShadow: 3,
@@ -55,7 +56,7 @@ function ChatSide() {
 			}}>
 			<CardContent sx={{ p: 0 }}>
 				<SidebarHeader />
-				{isUsersLoading ? (
+				{isChatsLoading ? (
 					<div
 						style={{
 							display: "flex",
@@ -67,8 +68,10 @@ function ChatSide() {
 							<SkeletonUsers key={index} />
 						))}
 					</div>
+				) : chats.length !== 0 ? (
+					<ChatsList chats={chats} />
 				) : (
-					<UsersList users={users} />
+					<h4>No Chats Yet</h4>
 				)}
 			</CardContent>
 			{/* Right border for resizing */}

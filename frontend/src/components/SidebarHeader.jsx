@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useChatStore } from "../store/useChatStore";
 
 import {
 	Typography,
@@ -6,6 +7,7 @@ import {
 	Menu,
 	MenuItem,
 	ListItemIcon,
+	useMediaQuery,
 } from "@mui/material";
 import {
 	FilterList,
@@ -15,12 +17,15 @@ import {
 	PersonOff,
 	Group,
 	Drafts,
+	Search,
 } from "@mui/icons-material";
 
 import SearchableDropdown from "./contactSearch";
 import SearchBar from "./SearchBar";
 
 export default function SidebarHeader() {
+	const { contacts } = useChatStore();
+
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 
@@ -31,8 +36,15 @@ export default function SidebarHeader() {
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
+	const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm")); // Set your breakpoint
+
 	return (
-		<div>
+		<div
+			style={{
+				marginBottom: "30px",
+				paddingBottom: "10px",
+				borderBottom: isSmallScreen ? "1px solid white" : "",
+			}}>
 			<div
 				style={{
 					display: "flex",
@@ -40,15 +52,15 @@ export default function SidebarHeader() {
 					alignItems: "center",
 				}}>
 				<Typography variant="h5" fontWeight={600}>
-					Chats
+					{isSmallScreen ? "HaqSapp" : "Chats"}
 				</Typography>
 				<div style={{ display: "flex" }}>
-					<SearchableDropdown
-						items={["Banana", "Apple", "Orange", "Bar", "Mango", "Grapes"]}
-					/>
+					<SearchableDropdown contacts={contacts} />
 					<IconButton onClick={handleMenu} color="primary">
 						<FilterList />
 					</IconButton>
+					{/* <IconButton color="primary">
+					</IconButton> */}
 				</div>
 
 				<Menu
@@ -102,7 +114,7 @@ export default function SidebarHeader() {
 					</MenuItem>
 				</Menu>
 			</div>
-			<SearchBar />
+			{/* <SearchBar /> */}
 		</div>
 	);
 }

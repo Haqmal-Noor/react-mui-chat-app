@@ -23,10 +23,7 @@ function Sidebar() {
 				py: 2,
 			}}>
 			<Box color={"white"} display="flex" flexDirection="column" gap={2}>
-				<IconButton onClick={() => navigate("/")} color="inherit">
-					<Home />
-				</IconButton>
-				<IconButton color="inherit">
+				<IconButton onClick={() => navigate("/chats")} color="inherit">
 					<Chat />
 				</IconButton>
 				<IconButton color="inherit">

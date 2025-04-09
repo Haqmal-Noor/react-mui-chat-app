@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
+
+
 import {
 	TextField,
 	IconButton,
@@ -10,10 +12,9 @@ import {
 } from "@mui/material";
 import { Send, AttachFile, InsertEmoticon, Close } from "@mui/icons-material";
 import Picker from "emoji-picker-react";
-import { getCurrentTime } from "../services/getCurrentTime";
 import { toast } from "react-toastify";
 
-// import VoiceRecorder from "./VoiceRecorder";
+import VoiceRecorder from "./VoiceRecorder";
 
 function TransferMessageInput() {
 	const [text, setText] = useState("");
@@ -107,7 +108,7 @@ function TransferMessageInput() {
 					display: "flex",
 					alignItems: "center",
 					p: 2,
-					borderRadius: 4,
+					borderRadius: 0,
 					gap: 1,
 				}}>
 				<IconButton
@@ -156,14 +157,7 @@ function TransferMessageInput() {
 					sx={{ flex: 1 }}
 				/>
 
-				{/* {user && receiver && (
-				<VoiceRecorder
-					socket={socket}
-					setMessages={setMessages}
-					sender={user.username}
-					receiver={receiver}
-				/>
-			)} */}
+				<VoiceRecorder />
 
 				<IconButton
 					onClick={handleSendMessage}
