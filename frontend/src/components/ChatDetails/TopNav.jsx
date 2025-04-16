@@ -9,12 +9,11 @@ import {
 } from "@mui/material";
 import { VideoCall, Call, Search } from "@mui/icons-material";
 
-import { useChatStore } from "../store/useChatStore";
-import { useAuthStore } from "../store/useAuthStore";
+import { useChatStore } from "../../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const TopNav = () => {
 	const { authUser, onlineUsers } = useAuthStore();
-
 	const { selectedChat } = useChatStore();
 
 	// todo: remove this function and put it in a file
@@ -42,7 +41,9 @@ const TopNav = () => {
 						<Typography
 							variant="body2"
 							color={
-								onlineUsers.includes(selectedChat.participants[1]._id)
+								onlineUsers.includes(
+									getReceiver(selectedChat.participants, authUser._id)._id
+								)
 									? "primary"
 									: "secondary"
 							}>

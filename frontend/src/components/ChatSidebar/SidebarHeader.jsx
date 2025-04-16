@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useChatStore } from "../store/useChatStore";
+import { useChatStore } from "../../store/useChatStore";
 
 import {
 	Typography,
@@ -17,11 +17,9 @@ import {
 	PersonOff,
 	Group,
 	Drafts,
-	Search,
 } from "@mui/icons-material";
 
-import SearchableDropdown from "./contactSearch";
-import SearchBar from "./SearchBar";
+import SearchableDropdown from "./ContactSearch";
 
 export default function SidebarHeader() {
 	const { contacts } = useChatStore();

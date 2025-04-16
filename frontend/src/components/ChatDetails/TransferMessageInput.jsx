@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useChatStore } from "../store/useChatStore";
-
+import { useChatStore } from "../../store/useChatStore";
 
 import {
 	TextField,

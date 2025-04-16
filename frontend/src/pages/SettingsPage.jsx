@@ -1,8 +1,7 @@
-import Sidebar from "../components/Sidebar.jsx";
 import { themes } from "../theme/theme.js";
 import { Grid, Card, CardContent } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
-import Preview from "../components/Preview.jsx";
+import Preview from "../components/ChatDetails/Preview.jsx";
 import { useMediaQuery } from "@mui/material";
 
 const SettingsPage = ({ currentTheme, setCurrentTheme }) => {

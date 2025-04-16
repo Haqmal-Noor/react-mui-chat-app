@@ -12,6 +12,11 @@ const messageSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
+		status: {
+			type: String,
+			enum: ["sent", "delivered", "seen"],
+			default: "sent",
+		},
 		// receiverId: {
 		// 	type: mongoose.Schema.Types.ObjectId,
 		// 	ref: "User",

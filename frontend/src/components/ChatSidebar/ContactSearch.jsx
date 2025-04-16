@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../lib/axios";
+import { axiosInstance } from "../../lib/axios";
 
-import { useChatStore } from "../store/useChatStore";
-import { useAuthStore } from "../store/useAuthStore";
+import { useChatStore } from "../../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 import {
 	Popover,
@@ -39,8 +39,8 @@ const DropdownMenuForContactsSearch = () => {
 		setAnchorEl(null);
 	};
 
-	const handleCreateChat = (item) => {
-		createNewChat([authUser._id, item._id]);
+	const handleCreateChat = async (item) => {
+		await createNewChat([authUser._id, item._id]);
 		navigate(`/chats/${item._id}`);
 	};
 

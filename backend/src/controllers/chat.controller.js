@@ -76,7 +76,7 @@ export const getChatById = async (req, res) => {
 		// Find the chat by ID and ensure the current user is a participant
 		const chat = await Chat.findOne({
 			_id: id,
-			participants: userId, // Filter to ensure user is a participant
+			participants: { $in: [userId] }, // Checks if userId is in participants
 		})
 			.populate("participants", "username profilePic")
 			.populate("lastMessage");

@@ -1,4 +1,4 @@
-import NoChatSelectedComponent from "../components/NoChatSelectedComponent";
+import NoChatSelectedComponent from "../components/ChatDetails/NoChatSelectedComponent";
 
 const ChatPage = () => {
 	return <NoChatSelectedComponent />;

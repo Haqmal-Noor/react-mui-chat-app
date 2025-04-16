@@ -1,11 +1,11 @@
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 
 import { Box, IconButton } from "@mui/material";
 
-import { Chat, Call, Home, Settings, AccountCircle } from "@mui/icons-material";
+import { Chat, Call, Settings, AccountCircle } from "@mui/icons-material";
 
-import LogoutButton from "./Logout";
+import LogoutButton from "../Logout";
 
 function Sidebar() {
 	const { logout } = useAuthStore();

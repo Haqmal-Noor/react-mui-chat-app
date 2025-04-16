@@ -1,7 +1,7 @@
 // layouts/ChatLayout.jsx
 import React from "react";
-import Sidebar from "../components/Sidebar";
-import ChatSide from "../components/ChatSide";
+import Sidebar from "../components/ChatSidebar/Sidebar";
+import ChatSide from "../components/ChatSidebar/ChatSide";
 import { Outlet } from "react-router-dom";
 
 const ChatLayout = () => {

@@ -78,23 +78,24 @@ export const useChatStore = create((set, get) => ({
 		if (!selectedChat) return;
 
 		const socket = useAuthStore.getState().socket;
-		socket.on("newMessage", (newMessage) => {
+		// const userId = useAuthStore.getState().authUser._id;
+
+		socket.on("newMessage", async (newMessage) => {
 			if (newMessage.chatId !== selectedChat._id) return;
 
 			if (newMessage.audio) {
 				const audioBlob = base64ToBlob(newMessage.audio, "audio/mp3");
-				const audioUrl = URL.createObjectURL(audioBlob);
-				newMessage.audio = audioUrl;
+				newMessage.audio = URL.createObjectURL(audioBlob);
 			}
 
 			const existingMessages = get().messages;
 
-			// 💡 Deduplication by _id
-			if (!existingMessages.some((m) => m._id === newMessage._id)) {
-				set({ messages: [...existingMessages, newMessage] });
-			}
+			set({
+				messages: [...existingMessages, newMessage],
+			});
 		});
 	},
+
 	unsubscribeFromMessages: () => {
 		const socket = useAuthStore.getState().socket;
 		socket.off("newMessage");
@@ -105,6 +106,7 @@ export const useChatStore = create((set, get) => ({
 		socket.emit("joinChat", selectedChat._id);
 		set({ selectedChat: selectedChat });
 	},
+
 	getChatById: async (chatId) => {
 		try {
 			const response = await axiosInstance.get(`/chats/${chatId}`);

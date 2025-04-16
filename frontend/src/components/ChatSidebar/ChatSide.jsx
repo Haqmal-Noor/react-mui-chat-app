@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, useMediaQuery } from "@mui/material";
 
-import ChatItem from "./ChatItem";
-import SkeletonUsers from "./SkeletonUsers";
+import SkeletonUsers from "../Loaders/SkeletonUsers";
 import ChatsList from "./ChatsList";
 import SidebarHeader from "./SidebarHeader";
 
 import { useRef } from "react";
-import { useChatStore } from "../store/useChatStore";
+import { useChatStore } from "../../store/useChatStore";
 
 function ChatSide() {
 	const { getChats, chats, isChatsLoading } = useChatStore();

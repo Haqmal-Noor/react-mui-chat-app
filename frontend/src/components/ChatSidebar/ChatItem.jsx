@@ -1,5 +1,5 @@
 import { Avatar, Badge, Box, Typography } from "@mui/material";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 function ChatItem({ chat }) {
 	const { authUser, onlineUsers } = useAuthStore();
@@ -26,7 +26,13 @@ function ChatItem({ chat }) {
 				<Box sx={{ position: "relative", mr: 2 }}>
 					<Badge
 						variant="dot"
-						color={onlineUsers.includes(chat._id) ? "primary" : ""}
+						color={
+							onlineUsers.includes(
+								getReceiver(chat.participants, authUser._id)._id
+							)
+								? "primary"
+								: ""
+						}
 						overlap="circular"
 						anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
 						<Avatar

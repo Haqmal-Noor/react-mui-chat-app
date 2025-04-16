@@ -16,7 +16,7 @@ import { GlobalStyles } from "@mui/material";
 import MainLayout from "./layouts/MainLayout.jsx";
 import ChatLayout from "./layouts/ChatLayout.jsx";
 // components
-import Loader from "./components/Loader.jsx";
+import Loader from "./components/Loaders/Loader.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import ChatDetailsPage from "./pages/ChatDetailsPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";

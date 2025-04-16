@@ -57,10 +57,14 @@ const LoginPage = () => {
 				display: "flex",
 				justifyContent: "center",
 				alignItems: "center",
-				padding: 2,
 			}}>
-			<Container maxWidth="sm">
-				<Card sx={{ borderRadius: "6px", boxShadow: 3 }}>
+			<Container maxWidth="md">
+				<Card
+					sx={{
+						height: "60%",
+						padding: "5%",
+						borderRadius: "5px",
+					}}>
 					<CardContent>
 						<Box
 							sx={{

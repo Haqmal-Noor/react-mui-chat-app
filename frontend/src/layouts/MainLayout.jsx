@@ -1,6 +1,6 @@
 // layouts/MainLayout.jsx
 import React from "react";
-import Sidebar from "../components/Sidebar"; // Adjust path as needed
+import Sidebar from "../components/ChatSidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {

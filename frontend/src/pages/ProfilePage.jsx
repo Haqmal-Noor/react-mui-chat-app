@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 
-import Sidebar from "../components/Sidebar";
 
 import {
 	Container,

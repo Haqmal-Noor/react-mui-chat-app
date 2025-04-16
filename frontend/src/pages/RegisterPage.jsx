@@ -68,8 +68,8 @@ const RegisterPage = () => {
 				justifyContent: "center",
 				alignItems: "center",
 			}}>
-			<Container maxWidth="lg">
-				<Card sx={{ height: "60%", padding: "40px", borderRadius: "25px" }}>
+			<Container maxWidth="md">
+				<Card sx={{ height: "60%", padding: "5%", borderRadius: "5px" }}>
 					<CardContent
 						sx={{
 							display: "flex",
@@ -109,6 +109,7 @@ const RegisterPage = () => {
 											</InputAdornment>
 										),
 									}}
+									required
 								/>
 								<TextField
 									fullWidth
@@ -125,6 +126,7 @@ const RegisterPage = () => {
 											</InputAdornment>
 										),
 									}}
+									required
 								/>
 								<TextField
 									fullWidth
@@ -151,6 +153,7 @@ const RegisterPage = () => {
 											</InputAdornment>
 										),
 									}}
+									required
 								/>
 								<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 									<Typography>Already have an account? </Typography>
@@ -174,13 +177,6 @@ const RegisterPage = () => {
 									)}
 								</Button>
 							</Box>
-						</Box>
-						<Box sx={{ flex: 1, display: { xs: "none", md: "block" } }}>
-							<img
-								src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-								alt="Sample"
-								style={{ width: "100%" }}
-							/>
 						</Box>
 					</CardContent>
 				</Card>
