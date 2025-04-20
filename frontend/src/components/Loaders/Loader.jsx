@@ -2,7 +2,7 @@ import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-const Loader = () => {
+const Loader = ({ size }) => {
 	return (
 		<Box
 			sx={{
@@ -11,7 +11,7 @@ const Loader = () => {
 				alignItems: "center",
 				height: "100vh", // Full height of the viewport
 			}}>
-			<CircularProgress size={60} color="secondary" thickness={5} />
+			<CircularProgress size={size} color="secondary" thickness={5} />
 		</Box>
 	);
 };

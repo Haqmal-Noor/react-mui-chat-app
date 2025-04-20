@@ -23,6 +23,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
+import HomePage from "./pages/HomePage.jsx";
 
 function App() {
 	const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -40,7 +41,7 @@ function App() {
 	}, [checkAuth]);
 
 	if (isCheckingAuth && !authUser) {
-		return <Loader />;
+		return <Loader size={60} />;
 	}
 
 	return (
@@ -61,6 +62,7 @@ function App() {
 			/>
 			<Router>
 				<Routes>
+					<Route path="/" element={<HomePage />} />
 					{/* Chat routes with Sidebar + ChatSide */}
 					<Route element={authUser ? <ChatLayout /> : <Navigate to="/login" />}>
 						<Route path="/chats" element={<ChatPage />} />

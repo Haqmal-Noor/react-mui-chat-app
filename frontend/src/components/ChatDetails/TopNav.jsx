@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
 	Card,
 	CardContent,
@@ -6,13 +7,16 @@ import {
 	Typography,
 	Stack,
 	Box,
+	useMediaQuery,
 } from "@mui/material";
-import { VideoCall, Call, Search } from "@mui/icons-material";
+import { VideoCall, Call, Search, ArrowBack } from "@mui/icons-material";
 
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
 
 const TopNav = () => {
+	const navigate = useNavigate();
+
 	const { authUser, onlineUsers } = useAuthStore();
 	const { selectedChat } = useChatStore();
 
@@ -20,6 +24,9 @@ const TopNav = () => {
 	const getReceiver = (chatParticipants, senderId) => {
 		return chatParticipants?.find((userId) => userId._id !== senderId);
 	};
+
+	const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
 	return (
 		<Card>
 			<CardContent
@@ -29,6 +36,16 @@ const TopNav = () => {
 					justifyContent: "space-between",
 				}}>
 				<Stack direction="row" spacing={2} alignItems="center">
+					{isSmallScreen && (
+						<IconButton
+							sx={{ p: 0.5 }}
+							size="small"
+							color="primary"
+							onClick={() => navigate("/chats")}>
+							<ArrowBack />
+						</IconButton>
+					)}
+
 					<Avatar
 						src={
 							getReceiver(selectedChat.participants, authUser._id).profilePic

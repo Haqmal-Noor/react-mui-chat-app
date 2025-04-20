@@ -67,12 +67,13 @@ const VoiceRecorder = () => {
 	return (
 		<IconButton
 			color={isRecording ? "error" : "primary"}
+			sx={{ p: 0.5 }}
 			onClick={toggleRecording}
-			size="large">
+			>
 			{isRecording ? (
 				<StopIcon fontSize="large" />
 			) : (
-				<MicIcon fontSize="large" />
+				<MicIcon sx={{fontSize: "25px"}} />
 			)}
 			{isRecording && (
 				<CircularProgress size={24} sx={{ position: "absolute" }} />

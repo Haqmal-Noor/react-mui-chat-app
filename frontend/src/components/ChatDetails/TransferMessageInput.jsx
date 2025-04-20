@@ -106,14 +106,19 @@ function TransferMessageInput() {
 				sx={{
 					display: "flex",
 					alignItems: "center",
-					p: 2,
+					justifyContent: "space-between",
+					p: { xs: 1, sm: 2 }, // smaller padding on mobile
 					borderRadius: 0,
-					gap: 1,
+					flexWrap: "wrap", // makes it responsive
+					gap: 0.5, // tighter spacing between icons
+					maxWidth: "100%", // ensure it doesn't overflow
 				}}>
 				<IconButton
+					sx={{ p: 0.5 }}
+					size="small"
 					ref={emojiButtonRef}
 					onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-					<InsertEmoticon color="primary" />
+					<InsertEmoticon fontSize="small" color="primary" />
 				</IconButton>
 				<Popper
 					open={showEmojiPicker}
@@ -128,7 +133,7 @@ function TransferMessageInput() {
 							borderRadius: 2,
 						}}>
 						<Picker
-							onEmojiClick={(event, emojiObject) =>
+							onEmojiClick={(emojiObject, event) =>
 								handleEmojiClick(emojiObject)
 							}
 						/>
@@ -141,8 +146,11 @@ function TransferMessageInput() {
 					ref={fileInputRef}
 					onChange={handleFileChange}
 				/>
-				<IconButton onClick={() => fileInputRef.current.click()}>
-					<AttachFile color="primary" />
+				<IconButton
+					sx={{ p: 0.5 }}
+					size="small"
+					onClick={() => fileInputRef.current.click()}>
+					<AttachFile fontSize="small" color="primary" />
 				</IconButton>
 
 				<TextField
@@ -153,14 +161,30 @@ function TransferMessageInput() {
 					value={text}
 					onChange={handleChange}
 					onKeyDown={handleKeyDown}
-					sx={{ flex: 1 }}
+					sx={{
+						flex: 1,
+						px: 0,
+						"& .MuiOutlinedInput-root": {
+							"& fieldset": {
+								border: "none",
+							},
+							"&:hover fieldset": {
+								border: "none",
+							},
+							"&.Mui-focused fieldset": {
+								border: "none",
+							},
+						},
+					}}
 				/>
 
 				<VoiceRecorder />
 
 				<IconButton
+					sx={{ p: 0.5 }}
 					onClick={handleSendMessage}
-					disabled={!text.trim() && !selectedFile}>
+					disabled={!text.trim() && !selectedFile}
+					size="small">
 					<Send color={text.trim() || selectedFile ? "primary" : "disabled"} />
 				</IconButton>
 			</Paper>

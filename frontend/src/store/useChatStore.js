@@ -7,11 +7,13 @@ import { useAuthStore } from "./useAuthStore";
 
 export const useChatStore = create((set, get) => ({
 	messages: [],
+	hasMore: true,
 	chats: [],
 	contacts: [],
 	selectedChat: null,
 	isChatsLoading: false,
 	isMessagesLoading: false,
+	isFetchingMore: false,
 	isSendingMessage: false,
 
 	createNewChat: async (chatParticipants) => {
@@ -41,22 +43,49 @@ export const useChatStore = create((set, get) => ({
 			set({ isChatsLoading: false });
 		}
 	},
-	getMessages: async (chatId) => {
-		set({ isMessagesLoading: true });
+	getMessages: async (chatId, before, append = false) => {
+		if (!append) {
+			set({ isMessagesLoading: true });
+		} else {
+			set({ isFetchingMore: true });
+		}
+
 		try {
-			const response = await axiosInstance.get(`/messages/${chatId}`);
-			const messages = response.data;
-			const messagesWithFixedAudioFormat = messages.map((message) => ({
+			const response = await axiosInstance.get(`/messages/${chatId}`, {
+				params: before ? { before } : {},
+			});
+
+			const newMessages = response.data.map((message) => ({
 				...message,
 				audio: message.audio ? "data:audio/mp3;base64," + message.audio : "",
 			}));
-			set({ messages: messagesWithFixedAudioFormat || [] });
+
+			set((state) => {
+				if (append) {
+					// Deduplicate by _id
+					const existingIds = new Set(state.messages.map((m) => m._id));
+					const filteredNewMessages = newMessages.filter(
+						(m) => !existingIds.has(m._id)
+					);
+
+					return {
+						messages: [...filteredNewMessages, ...state.messages],
+						hasMore: newMessages.length > 0,
+					};
+				} else {
+					return {
+						messages: newMessages,
+						hasMore: newMessages.length > 0,
+					};
+				}
+			});
 		} catch (error) {
-			toast.error(error.response.data.message);
+			toast.error(error.response?.data?.message || "Failed to load messages");
 		} finally {
-			set({ isMessagesLoading: false });
+			set({ isMessagesLoading: false, isFetchingMore: false });
 		}
 	},
+
 	sendMessage: async (messageData) => {
 		set({ isSendingMessage: true });
 		const { selectedChat } = get();
@@ -88,10 +117,20 @@ export const useChatStore = create((set, get) => ({
 				newMessage.audio = URL.createObjectURL(audioBlob);
 			}
 
-			const existingMessages = get().messages;
+			set((state) => {
+				if (newMessage.chatId !== state.selectedChat?._id) return {};
 
-			set({
-				messages: [...existingMessages, newMessage],
+				const alreadyExists = state.messages.some(
+					(msg) => msg._id === newMessage._id
+				);
+
+				if (!alreadyExists) {
+					return {
+						messages: [...state.messages, newMessage],
+					};
+				}
+
+				return {};
 			});
 		});
 	},

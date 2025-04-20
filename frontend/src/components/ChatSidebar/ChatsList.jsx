@@ -8,14 +8,14 @@ import { useTheme } from "@mui/material/styles";
 import { Box } from "@mui/material";
 
 export default function ChatsList({ chats }) {
-	const { setSelectedChat, selectedChat } = useChatStore();
+	const { getChatById, selectedChat } = useChatStore();
 	const { authUser, onlineUsers } = useAuthStore();
 
 	const theme = useTheme();
 	const navigate = useNavigate();
 
 	const handleChatClick = (chat) => {
-		setSelectedChat(chat);
+		getChatById(chat._id);
 		navigate(`/chats/${chat._id}`); // ✅ navigate to chat detail
 	};
 	//todo: move the function to a file

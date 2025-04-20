@@ -2,13 +2,24 @@ import Message from "../models/message.model.js";
 import Chat from "../models/chat.model.js";
 import { io } from "../lib/socket.js";
 
+import mongoose from "mongoose";
+
 export const getMessages = async (req, res) => {
 	try {
 		const { id: chatId } = req.params;
+		const { before, limit = 25 } = req.query;
 
-		const messages = await Message.find({ chatId });
+		const query = { chatId };
 
-		res.status(200).json(messages);
+		if (before && mongoose.Types.ObjectId.isValid(before)) {
+			query._id = { $lt: before }; // Get messages before this ID
+		}
+
+		const messages = await Message.find(query)
+			.sort({ _id: -1 }) // Newest messages first
+			.limit(parseInt(limit));
+
+		res.status(200).json(messages.reverse()); // Send oldest first to frontend
 	} catch (error) {
 		res.status(500).json({ message: "Server Error", error: error.message });
 	}
@@ -36,6 +47,7 @@ export const sendMessage = async (req, res) => {
 		});
 
 		const savedMessage = await newMessage.save(); // Ensure message is saved before emitting
+		savedMessage.isLastMessage = true;
 
 		await Chat.findByIdAndUpdate(chatId, {
 			lastMessage: newMessage._id,

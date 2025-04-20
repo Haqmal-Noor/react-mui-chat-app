@@ -59,7 +59,7 @@ const ChatMessage = ({
 						alt="Message attachment"
 						onClick={() => onImageClick(message.image)}
 						sx={{
-							borderRadius: 2,
+							borderRadius: 1,
 							mb: 1,
 							width: "100%",
 							maxWidth: 250,
@@ -100,14 +100,13 @@ const ChatMessage = ({
 					{isSentByCurrentUser && (
 						<Box sx={{ ml: 1 }}>
 							{isSendingMessage ? (
-								<AccessTimeIcon sx={{ fontSize: 14, color: "white" }} />
+								message.isLastMessage && (
+									<AccessTimeIcon sx={{ fontSize: 14, color: "white" }} />
+								)
 							) : (
 								<>
 									{message.status === "sent" && (
 										<Check sx={{ fontSize: 14, color: "white" }} />
-									)}
-									{message.status === "seen" && (
-										<DoneAllOutlined sx={{ fontSize: 14, color: "white" }} />
 									)}
 								</>
 							)}
