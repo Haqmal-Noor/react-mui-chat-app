@@ -2,6 +2,8 @@ import { Server } from "socket.io";
 import http from "http";
 import express from "express";
 
+import Message from "../models/message.model.js";
+
 const app = express();
 const server = http.createServer(app);
 
@@ -16,7 +18,7 @@ export function getReceiverSocketId(userId) {
 }
 
 // Used to store online users
-const userSocketMap = {}; // {userId: socketId}
+export const userSocketMap = {}; // {userId: socketId}
 
 io.on("connection", (socket) => {
 	console.log("A user connected", socket.id);
@@ -33,20 +35,60 @@ io.on("connection", (socket) => {
 		socket.join(chatId);
 		console.log(`User: ${socket.id} joined chat: ${chatId}`);
 	});
-	// Handle message delivered
-	socket.on("messageDelivered", ({ messageId, from }) => {
-		const socketId = userSocketMap[from];
-		if (socketId) {
-			io.to(socketId).emit("messageStatus", { messageId, status: "delivered" });
-		}
+
+	socket.on("delivered", async ({ chatId, messageIds, userId }) => {
+		// 1) Update DB
+		await Message.updateMany(
+			{ _id: { $in: messageIds }, deliveredAt: null },
+			{ deliveredAt: new Date() }
+		);
+
+		// 2) Fetch the messages so we know each sender
+		const deliveredMessages = await Message.find({ _id: { $in: messageIds } });
+
+		// 3) Notify each sender
+		deliveredMessages.forEach((message) => {
+			const senderSocket = getReceiverSocketId(message.senderId);
+			if (senderSocket) {
+				io.to(senderSocket).emit("messageDelivered", {
+					messageId: message._id,
+					deliveredAt: message.deliveredAt,
+				});
+			}
+		});
 	});
 
-	// Handle message seen
-	socket.on("messageSeen", ({ messageId, from }) => {
-		const socketId = userSocketMap[from];
-		if (socketId) {
-			io.to(socketId).emit("messageStatus", { messageId, status: "seen" });
-		}
+	socket.on("seen", async ({ chatId, messageIds }) => {
+		console.log(messageIds);
+		// 1) Update DB
+		await Message.updateMany(
+			{ _id: { $in: messageIds }, seenAt: undefined },
+			{ seenAt: new Date() }
+		);
+
+		// 2) Fetch the messages so we know each sender
+		const seenMessages = await Message.find({ _id: { $in: messageIds } });
+		let x = 0;
+		// 3) Notify each sender
+		seenMessages.forEach((message) => {
+			x++;
+			const senderSocket = getReceiverSocketId(message.senderId);
+			if (senderSocket) {
+				io.to(senderSocket).emit("messageSeen", {
+					messageId: message._id,
+					seenAt: message.seenAt,
+				});
+			}
+		});
+		console.log(x);
+	});
+
+	socket.on("typing", ({ room, userId }) => {
+		socket.to(room).emit("typing", { userId });
+	});
+
+	socket.on("stopTyping", ({ room, userId }) => {
+		socket.to(room).emit("stopTyping", { userId });
 	});
 
 	socket.on("disconnect", () => {

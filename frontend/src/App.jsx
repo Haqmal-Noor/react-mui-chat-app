@@ -25,6 +25,20 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 
+const resumeAudioContext = () => {
+	try {
+		const AudioContext = window.AudioContext || window.webkitAudioContext;
+		if (!window._appAudioContext) {
+			window._appAudioContext = new AudioContext();
+		}
+		if (window._appAudioContext.state === "suspended") {
+			window._appAudioContext.resume();
+		}
+	} catch (err) {
+		console.warn("Audio context could not be resumed", err);
+	}
+};
+
 function App() {
 	const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
 
@@ -39,6 +53,22 @@ function App() {
 	useEffect(() => {
 		checkAuth();
 	}, [checkAuth]);
+
+	useEffect(() => {
+		const resumeOnUserInteraction = () => {
+			resumeAudioContext();
+			document.removeEventListener("click", resumeOnUserInteraction);
+			document.removeEventListener("keydown", resumeOnUserInteraction);
+		};
+
+		document.addEventListener("click", resumeOnUserInteraction);
+		document.addEventListener("keydown", resumeOnUserInteraction);
+
+		return () => {
+			document.removeEventListener("click", resumeOnUserInteraction);
+			document.removeEventListener("keydown", resumeOnUserInteraction);
+		};
+	}, []);
 
 	if (isCheckingAuth && !authUser) {
 		return <Loader size={60} />;
@@ -65,8 +95,8 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					{/* Chat routes with Sidebar + ChatSide */}
 					<Route element={authUser ? <ChatLayout /> : <Navigate to="/login" />}>
-						<Route path="/chats" element={<ChatPage />} />
-						<Route path="/chats/:id" element={<ChatDetailsPage />} />
+						{/* <Route path="/chats" element={<ChatPage />} /> */}
+						<Route path="/chats/:id?" element={<ChatDetailsPage />} />
 					</Route>
 
 					{/* General pages with Sidebar only */}

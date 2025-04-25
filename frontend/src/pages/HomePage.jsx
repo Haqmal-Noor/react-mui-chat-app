@@ -39,7 +39,7 @@ const HomePage = () => {
 							</Button>
 							<Button
 								component={Link}
-								to="/signup"
+								to="/register"
 								variant="contained"
 								color="primary">
 								Sign Up
@@ -79,7 +79,10 @@ const HomePage = () => {
 					}}>
 					{authUser ? (
 						<Typography variant="h2" fontWeight="bold" gutterBottom>
-							Welcome back, <Typography variant="h2" color="primary">{authUser.username}</Typography>
+							Welcome back,{" "}
+							<Typography variant="h2" color="primary">
+								{authUser.username}
+							</Typography>
 						</Typography>
 					) : (
 						<Typography variant="h2" fontWeight="bold" gutterBottom>

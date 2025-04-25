@@ -33,7 +33,6 @@ export default function ProfilePage() {
 			reader.onload = async () => {
 				const base64Image = reader.result;
 				setSelectedImage(base64Image);
-				console.log("asdf");
 				await updateProfile({ profilePic: base64Image });
 			};
 		}

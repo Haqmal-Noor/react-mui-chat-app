@@ -6,26 +6,19 @@ import {
 	Box,
 	IconButton,
 } from "@mui/material";
-import {
-	Check,
-	DoneAllOutlined,
-	AccessTime as AccessTimeIcon,
-} from "@mui/icons-material";
+import { Check, AccessTime as AccessTimeIcon } from "@mui/icons-material";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import DoubleCheckIcon from "@mui/icons-material/DoneAll";
+
+import { useTheme } from "@mui/material/styles";
 
 import { format } from "date-fns";
 import AudioPlayer from "./AudioPlayer";
 import MessageMenu from "./MessageMenu";
 import { useState } from "react";
 
-const ChatMessage = ({
-	message,
-	authUser,
-	selectedChat,
-	isSendingMessage,
-	onImageClick,
-}) => {
+const ChatMessage = ({ message, authUser, selectedChat, onImageClick }) => {
 	const isSentByCurrentUser = message.senderId === authUser._id;
 
 	const [menuAnchor, setMenuAnchor] = useState(null);
@@ -36,17 +29,21 @@ const ChatMessage = ({
 		? authUser.profilePic
 		: selectedChat.participants.find((p) => p._id === message.senderId)
 				?.profilePic;
+	const theme = useTheme();
 
 	return (
 		<>
 			<Avatar src={senderPic} />
 			<Card
 				sx={{
-					p: 1.5,
-					maxWidth: "60%",
+					py: 0.7,
+					px: 1,
+					maxWidth: "75%",
 					minWidth: "10%",
-					backgroundColor: isSentByCurrentUser ? "primary.light" : "grey.300",
-					borderRadius: 2,
+					backgroundColor: isSentByCurrentUser
+						? theme.palette.primary.main
+						: theme.palette.background.default,
+					borderRadius: 1,
 					wordBreak: "break-word",
 					overflowWrap: "anywhere",
 					display: "flex",
@@ -72,7 +69,7 @@ const ChatMessage = ({
 				{message.text && (
 					<Typography
 						variant="body1"
-						color={isSentByCurrentUser ? "white" : "black"}
+						color={isSentByCurrentUser ? "white" : theme.palette.text.primary}
 						sx={{ whiteSpace: "pre-wrap" }}>
 						{message.text}
 					</Typography>
@@ -85,30 +82,24 @@ const ChatMessage = ({
 						display: "flex",
 						justifyContent: "space-between",
 						alignItems: "center",
-						mt: 1,
+						mt: 0.5,
 					}}>
 					<Typography
 						sx={{
-							fontSize: "10px",
-							color: isSentByCurrentUser ? "white" : "black",
+							fontSize: "9px",
+							color: isSentByCurrentUser ? "white" : theme.palette.text.primary,
 							flex: 1,
-							textAlign: isSentByCurrentUser ? "right" : "left",
+							textAlign: "left",
 						}}>
 						{format(new Date(message.createdAt), "p")}
 					</Typography>
 
 					{isSentByCurrentUser && (
-						<Box sx={{ ml: 1 }}>
-							{isSendingMessage ? (
-								message.isLastMessage && (
-									<AccessTimeIcon sx={{ fontSize: 14, color: "white" }} />
-								)
+						<Box>
+							{message.seenAt ? (
+								<DoubleCheckIcon sx={{ color: "blue", fontSize: "14px" }} />
 							) : (
-								<>
-									{message.status === "sent" && (
-										<Check sx={{ fontSize: 14, color: "white" }} />
-									)}
-								</>
+								<Check sx={{ color: "white", fontSize: "14px" }} />
 							)}
 						</Box>
 					)}

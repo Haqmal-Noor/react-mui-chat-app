@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useChatStore } from "../../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 import {
 	TextField,
@@ -14,16 +15,19 @@ import Picker from "emoji-picker-react";
 import { toast } from "react-toastify";
 
 import VoiceRecorder from "./VoiceRecorder";
+import { playSoundWithWebAudio } from "../../utils/playSound";
 
 function TransferMessageInput() {
 	const [text, setText] = useState("");
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const [selectedFile, setSelectedFile] = useState(null);
+
 	const fileInputRef = useRef(null);
 	const emojiButtonRef = useRef(null);
 	const emojiPickerRef = useRef(null);
 
-	const { sendMessage } = useChatStore();
+	const { selectedChat, sendMessage, isSendingMessage } = useChatStore();
+	const { authUser } = useAuthStore();
 
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -54,7 +58,15 @@ function TransferMessageInput() {
 	};
 
 	const handleChange = (event) => {
-		setText(event.target.value);
+		const newText = event.target.value;
+		setText(newText);
+
+		if (!selectedChat || !authUser) return;
+
+		useChatStore.getState().handleTyping({
+			roomId: selectedChat._id,
+			userId: authUser._id,
+		});
 	};
 
 	const removeImage = () => {
@@ -76,6 +88,7 @@ function TransferMessageInput() {
 	};
 
 	const handleSendMessage = async () => {
+		if (isSendingMessage) return;
 		if (!text.trim() && !selectedFile) return;
 
 		try {
@@ -83,6 +96,7 @@ function TransferMessageInput() {
 			setText("");
 			setSelectedFile(null);
 			if (fileInputRef.current) fileInputRef.current.value = "";
+			playSoundWithWebAudio("/sounds/sent-message.wav");
 		} catch (error) {
 			console.log(error);
 		}

@@ -1,6 +1,9 @@
 import { Avatar, Badge, Box, Typography } from "@mui/material";
 import { useAuthStore } from "../../store/useAuthStore";
 
+import MicIcon from "@mui/icons-material/Mic";
+import ImageIcon from "@mui/icons-material/Image";
+
 function ChatItem({ chat }) {
 	const { authUser, onlineUsers } = useAuthStore();
 	// todo: remove this function and put it in a file
@@ -44,18 +47,46 @@ function ChatItem({ chat }) {
 					<Typography variant="subtitle1" fontWeight="bold">
 						{getReceiver(chat.participants, authUser._id).username}
 					</Typography>
-					<Typography variant="body2" color="text.secondary">
-						{chat.lastMessage?.text}
+					<Typography
+						sx={{
+							whiteSpace: "nowrap",
+							overflow: "hidden",
+							textOverflow: "ellipsis",
+							width: "230px",
+						}}
+						variant="body2"
+						color="text.secondary">
+						{chat.lastMessage?.audio && (
+							<Typography
+								color="primary"
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									fontSize: "12px",
+								}}>
+								<MicIcon sx={{ fontSize: "14px" }} />
+								Voice message
+							</Typography>
+						)}
+						{chat.lastMessage?.image ? (
+							<Typography
+								color="primary"
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									fontSize: "12px",
+								}}>
+								<ImageIcon sx={{ fontSize: "14px" }} />
+								Image
+							</Typography>
+						) : (
+							chat.lastMessage?.text
+						)}
 					</Typography>
 				</Box>
 			</Box>
-			{/* <Box textAlign="right">
-				<Typography variant="caption" color="text.secondary" display="block">
-					Just now
-				</Typography>
 
-				<Badge badgeContent={3} color="primary" />
-			</Box> */}
+			{/* <Badge badgeContent={3} color="primary" /> */}
 		</Box>
 	);
 }

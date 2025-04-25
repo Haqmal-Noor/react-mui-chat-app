@@ -50,7 +50,7 @@ function ChatSide() {
 				p: 2,
 				borderRadius: 0,
 				boxShadow: 3,
-				borderRight: 1,
+				borderRight: 0.5,
 				position: "relative",
 			}}>
 			<CardContent sx={{ p: 0 }}>

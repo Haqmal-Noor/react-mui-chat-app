@@ -1,6 +1,6 @@
 import Message from "../models/message.model.js";
 import Chat from "../models/chat.model.js";
-import { io } from "../lib/socket.js";
+import { io, userSocketMap } from "../lib/socket.js";
 
 import mongoose from "mongoose";
 
@@ -24,14 +24,12 @@ export const getMessages = async (req, res) => {
 		res.status(500).json({ message: "Server Error", error: error.message });
 	}
 };
-
 export const sendMessage = async (req, res) => {
 	try {
 		const { text, image, audio } = req.body;
 		const { id: chatId } = req.params;
 		const senderId = req.user._id;
 
-		// todo: better validation required
 		if (!chatId) {
 			return res
 				.status(400)
@@ -44,17 +42,36 @@ export const sendMessage = async (req, res) => {
 			text: audio ? "" : text,
 			image: audio ? "" : image,
 			audio,
+			sentAt: new Date(),
 		});
 
-		const savedMessage = await newMessage.save(); // Ensure message is saved before emitting
-		savedMessage.isLastMessage = true;
+		const savedMessage = await newMessage.save();
 
 		await Chat.findByIdAndUpdate(chatId, {
 			lastMessage: newMessage._id,
 			updatedAt: Date.now(),
 		});
 
-		io.to(chatId).emit("newMessage", savedMessage); // Emit only after saving
+		// socket.emit("messageSent", { tempId, savedMessage });
+		// Emit new message to everyone in the chat room
+		io.to(chatId).emit("newMessage", savedMessage);
+
+		// 🔔 Notification Logic
+		const chat = await Chat.findById(chatId);
+		const receiverId = chat.participants.find(
+			(id) => id.toString() !== senderId.toString()
+		);
+
+		const receiverSocketId = userSocketMap[receiverId];
+
+		// If receiver is online and not currently in the chat room
+		if (receiverSocketId) {
+			io.to(receiverSocketId).emit("notification", {
+				from: senderId,
+				chatId,
+				message: text || "📩 New message received",
+			});
+		}
 
 		res.status(201).json(savedMessage);
 	} catch (error) {

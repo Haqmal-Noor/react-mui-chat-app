@@ -12,16 +12,6 @@ const messageSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
-		status: {
-			type: String,
-			enum: ["sent", "delivered", "seen"],
-			default: "sent",
-		},
-		// receiverId: {
-		// 	type: mongoose.Schema.Types.ObjectId,
-		// 	ref: "User",
-		// 	required: true,
-		// },
 		text: {
 			type: String,
 		},
@@ -31,6 +21,9 @@ const messageSchema = new mongoose.Schema(
 		audio: {
 			type: String,
 		},
+		sentAt: { type: Date },
+		deliveredAt: { type: Date },
+		seenAt: { type: Date },
 	},
 	{ timestamps: true }
 );

@@ -4,6 +4,7 @@ import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 
 import { useChatStore } from "../../store/useChatStore";
+import { playSoundWithWebAudio } from "../../utils/playSound";
 
 const VoiceRecorder = () => {
 	const { sendMessage } = useChatStore();
@@ -39,6 +40,7 @@ const VoiceRecorder = () => {
 					reader.onloadend = async () => {
 						const base64Audio = reader.result.split(",")[1]; // Extract base64 string only
 						await sendMessage({ audio: base64Audio }); // Send base64 audio
+						playSoundWithWebAudio("/sounds/sent-message.wav");
 					};
 
 					reader.readAsDataURL(audioBlob);
@@ -68,12 +70,11 @@ const VoiceRecorder = () => {
 		<IconButton
 			color={isRecording ? "error" : "primary"}
 			sx={{ p: 0.5 }}
-			onClick={toggleRecording}
-			>
+			onClick={toggleRecording}>
 			{isRecording ? (
 				<StopIcon fontSize="large" />
 			) : (
-				<MicIcon sx={{fontSize: "25px"}} />
+				<MicIcon sx={{ fontSize: "25px" }} />
 			)}
 			{isRecording && (
 				<CircularProgress size={24} sx={{ position: "absolute" }} />

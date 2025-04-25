@@ -12,16 +12,18 @@ import ImageModal from "../components/ChatDetails/ImageModal";
 
 import Loader from "../components/Loaders/Loader";
 
-import { Box, Typography, Fab, Zoom, IconButton } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import NoChatSelectedComponent from "../components/ChatDetails/NoChatSelectedComponent";
 
 function ChatDetailsPage() {
 	const { id } = useParams();
 	const messagesRef = useRef(null);
+	const prevMessagesLengthRef = useRef(0);
 	const [prevScrollHeight, setPrevScrollHeight] = useState(0);
 
-	const { authUser } = useAuthStore();
+	const { authUser, socket } = useAuthStore();
 	const {
 		messages,
 		getMessages,
@@ -49,12 +51,44 @@ function ChatDetailsPage() {
 		if (id) getChatById(id);
 	}, [id, getChatById]);
 
+	const isUserAtBottom = useCallback(() => {
+		if (!messagesRef.current) return false;
+		const { scrollTop, scrollHeight, clientHeight } = messagesRef.current;
+		return scrollHeight - scrollTop - clientHeight < 100;
+	}, []);
+
 	useEffect(() => {
+		if (!socket || !isUserAtBottom()) return;
+
+		console.log(messages.seenAt);
+
+		// Find messages sent by others that we haven't marked as seen yet
+		const unseenIds = messages
+			.filter((m) => m.senderId !== authUser._id && !m.seenAt)
+			.map((m) => m._id);
+
+		if (unseenIds.length > 0) {
+			console.log(unseenIds.length);
+			socket.emit("seen", {
+				chatId: selectedChat._id,
+				messageIds: unseenIds,
+			});
+		}
+	}, [messages, isUserAtBottom, socket, selectedChat, authUser]);
+
+	useEffect(() => {
+		// Always subscribe when the component mounts or deps change
+		subscribeToMessages();
+
+		// If there is a selected chat, fetch messages
 		if (selectedChat?._id) {
 			getMessages(selectedChat._id);
-			subscribeToMessages();
-			return () => unsubscribeFromMessages();
 		}
+
+		// Always unsubscribe when the component unmounts or deps change
+		return () => {
+			unsubscribeFromMessages();
+		};
 	}, [selectedChat, getMessages, subscribeToMessages, unsubscribeFromMessages]);
 
 	useEffect(() => {
@@ -70,18 +104,28 @@ function ChatDetailsPage() {
 
 	const handleScroll = useCallback(() => {
 		const container = messagesRef.current;
-		if (!container || isMessagesLoading || !hasMore) return;
+		if (!container || isMessagesLoading) return;
 
-		if (container.scrollTop < 100) {
+		if (container.scrollTop < 100 && hasMore) {
 			setPrevScrollHeight(container.scrollHeight);
 			const oldestMessageId = messages[0]?._id;
 			if (oldestMessageId && selectedChat?._id) {
 				getMessages(selectedChat._id, oldestMessageId, true);
 			}
+		} else if (isUserAtBottom()) {
+			// 👇 Reset scroll height when user scrolls back to bottom
+			setPrevScrollHeight(0);
 		}
-	}, [messages, isMessagesLoading, hasMore, selectedChat, getMessages]);
+	}, [
+		messages,
+		isUserAtBottom,
+		isMessagesLoading,
+		hasMore,
+		selectedChat,
+		getMessages,
+	]);
 
-	// 👇 Scroll to bottom on button click
+	// Scroll to bottom on button click
 	const scrollToBottom = () => {
 		if (messagesRef.current) {
 			messagesRef.current.scrollTo({
@@ -90,8 +134,33 @@ function ChatDetailsPage() {
 			});
 		}
 	};
+
+	// Scroll to bottom when a new message is added (not when loading more)
+	useEffect(() => {
+		if (
+			messagesRef.current &&
+			messages.length > prevMessagesLengthRef.current
+		) {
+			const isNewMessage =
+				messages.length > 0 &&
+				!isMessagesLoading &&
+				!isFetchingMore &&
+				prevScrollHeight === 0;
+
+			if (isNewMessage) {
+				messagesRef.current.scrollTo({
+					top: messagesRef.current.scrollHeight,
+					behavior: "smooth",
+				});
+			}
+		}
+
+		prevMessagesLengthRef.current = messages.length;
+	}, [messages, isMessagesLoading, isFetchingMore, prevScrollHeight]);
+
 	const theme = useTheme();
 
+	if (!id) return <NoChatSelectedComponent />;
 	if (isMessagesLoading || !selectedChat) return <ChatSkeleton />;
 
 	return (
