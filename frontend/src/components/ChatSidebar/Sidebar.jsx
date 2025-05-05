@@ -6,17 +6,10 @@ import { Box, IconButton } from "@mui/material";
 import { Chat, Call, Settings, AccountCircle } from "@mui/icons-material";
 
 import LogoutButton from "../Logout";
-import { useChatStore } from "../../store/useChatStore";
 
 function Sidebar() {
 	const { logout } = useAuthStore();
-	const { setSelectedChat } = useChatStore();
 	const navigate = useNavigate();
-
-	const handleChatsClick = () => {
-		setSelectedChat({});
-		navigate("/chats");
-	};
 
 	return (
 		<Box
@@ -31,7 +24,7 @@ function Sidebar() {
 				py: 2,
 			}}>
 			<Box color={"white"} display="flex" flexDirection="column" gap={2}>
-				<IconButton onClick={handleChatsClick} color="inherit">
+				<IconButton onClick={() => navigate("/chats")} color="inherit">
 					<Chat />
 				</IconButton>
 				<IconButton color="inherit">

@@ -16,6 +16,7 @@ function ChatItem({ chat }) {
 			href="#!"
 			sx={{
 				display: "flex",
+				cursor: "pointer",
 				width: "100%",
 				justifyContent: "space-between",
 				textDecoration: "none",
@@ -31,7 +32,7 @@ function ChatItem({ chat }) {
 						variant="dot"
 						color={
 							onlineUsers.includes(
-								getReceiver(chat.participants, authUser._id)._id
+								getReceiver(chat.participants, authUser._id)?._id
 							)
 								? "primary"
 								: ""
@@ -39,13 +40,13 @@ function ChatItem({ chat }) {
 						overlap="circular"
 						anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
 						<Avatar
-							src={getReceiver(chat.participants, authUser._id).profilePic}
+							src={getReceiver(chat.participants, authUser._id)?.profilePic}
 						/>
 					</Badge>
 				</Box>
 				<Box>
 					<Typography variant="subtitle1" fontWeight="bold">
-						{getReceiver(chat.participants, authUser._id).username}
+						{getReceiver(chat.participants, authUser._id)?.username}
 					</Typography>
 					<Typography
 						sx={{
@@ -86,7 +87,7 @@ function ChatItem({ chat }) {
 				</Box>
 			</Box>
 
-			{/* <Badge badgeContent={3} color="primary" /> */}
+			<Badge badgeContent={chat.unseenMessagesCount} color="primary" />
 		</Box>
 	);
 }

@@ -60,17 +60,14 @@ function ChatDetailsPage() {
 	useEffect(() => {
 		if (!socket || !isUserAtBottom()) return;
 
-		console.log(messages.seenAt);
-
 		// Find messages sent by others that we haven't marked as seen yet
 		const unseenIds = messages
 			.filter((m) => m.senderId !== authUser._id && !m.seenAt)
 			.map((m) => m._id);
+		
 
 		if (unseenIds.length > 0) {
-			console.log(unseenIds.length);
 			socket.emit("seen", {
-				chatId: selectedChat._id,
 				messageIds: unseenIds,
 			});
 		}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
 	TextField,
 	CircularProgress,
@@ -12,13 +12,10 @@ import {
 	Paper,
 	Button,
 } from "@mui/material";
-import { debounce } from "lodash";
-import axios from "axios";
 
 const SearchBar = () => {
-	const [results, setResults] = useState([]);
+	const [results] = useState([]);
 	const [query, setQuery] = useState("");
-	const [loading, setLoading] = useState(false);
 	const [showResults, setShowResults] = useState(false);
 	const searchRef = useRef(null);
 

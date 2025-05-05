@@ -50,33 +50,15 @@ export const createChat = async (req, res) => {
 };
 
 // Get all chats for a user
-
 export const getUserChats = async (req, res) => {
 	try {
-		const userId = req.user.id; // authenticated user id
+		const userId = req.user.id; // Assuming user is authenticated
 
-		// Fetch chats
 		const chats = await Chat.find({ participants: userId })
 			.populate("participants", "username profilePic")
-			.populate("lastMessage")
-			.lean();
+			.populate("lastMessage");
 
-		// For each chat, count unseen messages sent by others
-		const chatsWithUnseenCount = await Promise.all(
-			chats.map(async (chat) => {
-				const unseenMessagesCount = await Message.countDocuments({
-					chatId: chat._id,
-					senderId: { $ne: userId },
-					seenAt: { $exists: false },
-				});
-				return {
-					...chat,
-					unseenMessagesCount,
-				};
-			})
-		);
-
-		res.status(200).json(chatsWithUnseenCount);
+		res.status(200).json(chats);
 	} catch (error) {
 		res.status(500).json({ message: "Server Error", error: error.message });
 	}

@@ -63,7 +63,7 @@ const AudioPlayer = ({ src }) => {
 	return (
 		<Card
 			sx={{
-				width: 350,
+				width: 325,
 				p: 1,
 				backgroundColor: theme.palette.background.paper,
 				borderRadius: 1,

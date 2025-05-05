@@ -16,12 +16,13 @@ import {
 	CheckBox,
 	Info,
 	Add,
+	Edit
 } from "@mui/icons-material";
 import EmojiPicker from "emoji-picker-react";
 
 const actions = [
 	{ label: "Reply", icon: <Reply /> },
-	{ label: "Star", icon: <Star /> },
+	{ label: "Edit", icon: <Edit /> },
 	{ label: "Pin", icon: <PushPin /> },
 	{ label: "Delete", icon: <Delete /> },
 	{ label: "Select", icon: <CheckBox /> },

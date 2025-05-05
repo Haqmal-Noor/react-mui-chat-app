@@ -24,7 +24,7 @@ export default function ChatsList({ chats }) {
 	};
 	const isReceiverOnline = (chat) => {
 		const receiver = getReceiver(chat.participants, authUser._id);
-		return onlineUsers.includes(receiver._id);
+		return onlineUsers.includes(receiver?._id);
 	};
 
 	// Sort chats: online users first
@@ -41,11 +41,10 @@ export default function ChatsList({ chats }) {
 					key={chat._id}
 					onClick={() => handleChatClick(chat)}
 					sx={{
-						cursor: "pointer",
 						marginTop: "5px",
 						borderRadius: "4px",
 						backgroundColor:
-							selectedChat?._id === chat._id
+							selectedChat?._id === chat?._id
 								? theme.palette.action.hover
 								: "transparent",
 						"&:hover": {

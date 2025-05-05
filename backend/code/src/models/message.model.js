@@ -12,22 +12,6 @@ const messageSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
-		replyTo: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Message",
-			default: null,
-		},
-		isDeleted: {
-			type: Boolean,
-			default: false,
-		},
-		deletedAt: {
-			type: Date,
-			default: null,
-		},
-		isEdited: { type: Boolean, default: false },
-		editedAt: { type: Date, default: null },
-
 		text: {
 			type: String,
 		},
@@ -37,7 +21,6 @@ const messageSchema = new mongoose.Schema(
 		audio: {
 			type: String,
 		},
-
 		sentAt: { type: Date },
 		deliveredAt: { type: Date },
 		seenAt: { type: Date },

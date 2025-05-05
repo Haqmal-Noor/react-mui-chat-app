@@ -14,6 +14,7 @@ import {
 	ListItemAvatar,
 	Avatar,
 	IconButton,
+	CircularProgress
 } from "@mui/material";
 import Search from "@mui/icons-material/Search";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -23,7 +24,7 @@ import { toast } from "react-toastify";
 const DropdownMenuForContactsSearch = () => {
 	const navigate = useNavigate();
 
-	const { createNewChat } = useChatStore();
+	const { createNewChat, isSearchingContacts } = useChatStore();
 	const { authUser } = useAuthStore();
 
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -40,8 +41,9 @@ const DropdownMenuForContactsSearch = () => {
 	};
 
 	const handleCreateChat = async (item) => {
-		await createNewChat([authUser._id, item._id]);
-		navigate(`/chats/${item._id}`);
+		const response = await createNewChat([authUser._id, item._id]);
+		console.log(response);
+		navigate(`/chats/${response._id}`);
 	};
 
 	useEffect(() => {
@@ -53,6 +55,7 @@ const DropdownMenuForContactsSearch = () => {
 				toast.error(error.response.data.message);
 			}
 		};
+
 		getContacts();
 	}, [search]);
 
@@ -80,6 +83,10 @@ const DropdownMenuForContactsSearch = () => {
 							startAdornment: <Search style={{ marginRight: 8 }} />,
 						}}
 					/>
+
+					{isSearchingContacts && (
+						<CircularProgress sx={{ display: "block", mx: "auto", mt: 2 }} />
+					)}
 					<List>
 						{contacts.length !== 0 ? (
 							contacts.map((item, index) => (

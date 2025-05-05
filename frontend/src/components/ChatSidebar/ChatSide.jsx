@@ -11,6 +11,7 @@ import { useChatStore } from "../../store/useChatStore";
 function ChatSide() {
 	const { getChats, chats, isChatsLoading } = useChatStore();
 
+
 	useEffect(() => {
 		getChats();
 	}, [getChats]);

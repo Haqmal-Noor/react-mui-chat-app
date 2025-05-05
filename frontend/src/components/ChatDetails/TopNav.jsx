@@ -8,7 +8,6 @@ import {
 	Typography,
 	Stack,
 	Box,
-	useMediaQuery,
 } from "@mui/material";
 import { VideoCall, Call, Search, ArrowBack } from "@mui/icons-material";
 
@@ -21,10 +20,8 @@ const TopNav = () => {
 	const navigate = useNavigate();
 
 	const { authUser, onlineUsers } = useAuthStore();
-	const { selectedChat } = useChatStore();
+	const { selectedChat, setSelectedChat } = useChatStore();
 	const [isTyping, setIsTyping] = useState(false);
-
-	const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
 	const getReceiver = (chatParticipants, senderId) => {
 		return chatParticipants?.find((userId) => userId._id !== senderId);
@@ -37,7 +34,7 @@ const TopNav = () => {
 
 		const unsubscribe = useChatStore
 			.getState()
-			.listenToTypingStatus(receiver._id, setIsTyping);
+			.listenToTypingStatus(receiver?._id, setIsTyping);
 
 		return () => {
 			if (unsubscribe) unsubscribe();
@@ -46,7 +43,7 @@ const TopNav = () => {
 
 	const showStatus = () => {
 		if (isTyping) return "Typing...";
-		if (onlineUsers.includes(receiver._id)) return "Online";
+		if (onlineUsers.includes(receiver?._id)) return "Online";
 		return "Offline";
 	};
 	const handleVoiceCall = () => {
@@ -54,7 +51,12 @@ const TopNav = () => {
 
 		// Emit a "call-user" event or use your WebRTC function
 		// For example, using Socket.IO
-		useChatStore.getState().initiateVoiceCall(receiver._id);
+		useChatStore.getState().initiateVoiceCall(receiver?._id);
+	};
+
+	const handleGoBack = () => {
+		navigate("/chats");
+		setSelectedChat(null);
 	};
 
 	return (
@@ -66,15 +68,13 @@ const TopNav = () => {
 					justifyContent: "space-between",
 				}}>
 				<Stack direction="row" spacing={2} alignItems="center">
-					{isSmallScreen && (
-						<IconButton
-							sx={{ p: 0.5 }}
-							size="small"
-							color="primary"
-							onClick={() => navigate("/chats")}>
-							<ArrowBack />
-						</IconButton>
-					)}
+					<IconButton
+						sx={{ p: 0.5 }}
+						size="small"
+						color="primary"
+						onClick={handleGoBack}>
+						<ArrowBack />
+					</IconButton>
 
 					<Avatar src={receiver?.profilePic} />
 					<Box>
@@ -89,7 +89,7 @@ const TopNav = () => {
 							<Typography
 								variant="body2"
 								color={
-									onlineUsers.includes(receiver._id) ? "primary" : "secondary"
+									onlineUsers.includes(receiver?._id) ? "primary" : "secondary"
 								}>
 								{showStatus()}
 							</Typography>
