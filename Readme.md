@@ -74,8 +74,8 @@ mern-chat-app/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/mern-chat-app.git
-   cd mern-chat-app
+   git clone https://github.com/Haqmal-Noor/react-mui-chat-app.git
+   cd react-mui-chat-app
    ```
 
 2. **Install backend dependencies**
@@ -96,17 +96,15 @@ Create `.env` files in both frontend and backend directories:
 
 **Backend (.env):**
 ```env
-PORT=5000
+PORT=3000
 MONGODB_URI=mongodb://localhost:27017/mern-chat
 JWT_SECRET=your_jwt_secret_key
-NODE_ENV=development
-CORS_ORIGIN=http://localhost:3000
 ```
 
 **Frontend (.env):**
 ```env
-REACT_APP_API_URL=http://localhost:5000
-REACT_APP_SOCKET_URL=http://localhost:5000
+REACT_APP_API_URL=http://localhost:3000
+REACT_APP_SOCKET_URL=http://localhost:3000
 ```
 
 ### Running the Application
@@ -124,7 +122,7 @@ REACT_APP_SOCKET_URL=http://localhost:5000
    ```
 
 3. **Access the application**
-   - Frontend: http://localhost:3000
+   - Frontend: http://localhost:5173
    - Backend API: http://localhost:5000
 
 ## 📡 API Endpoints
@@ -212,7 +210,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-If you have any questions or need help, please open an issue or contact [your-email@example.com](mailto:your-email@example.com).
+If you have any questions or need help, please open an issue or contact [haqmal.dev@gmail.com](mailto:haqmal.dev@gmail.com).
 
 ---
 
